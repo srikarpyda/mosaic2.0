@@ -1,0 +1,1 @@
+Mosaic('fruit.jpeg', 'C:\Users\Saumya\Desktop\mosaic2.0\tiles\', 'png', 16)

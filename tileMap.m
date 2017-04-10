@@ -10,9 +10,7 @@ for i=1:N
     imageName=images(i).name;
     image=imread([imgPath '/' imageName],imgType);
 
-  %% imread(imgPath+imageName);
     average(1:3) = AverageColorImage(image);
-   % average + " 3Tuple "
     map(imageName)=average;
 end
 
