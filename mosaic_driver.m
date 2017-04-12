@@ -1,1 +1,1 @@
-Mosaic('fruit.jpeg', 'C:\Users\Saumya\Desktop\mosaic2.0\tiles\', 'png', 16)
+Mosaic('anitaresized.jpg', 'C:\Users\Saumya\Desktop\mosaic2.0\tiles\', 'jpg', 20)
