@@ -3,11 +3,12 @@
 __device__ __forceinline__ 
 int getLinearIndex(int row, int col, int slice, int nRows, int nCols){
 	
-	slice*nRows*nCols + col * nRows + row;
+	//image indexing is column major
+	return slice*nRows*nCols + col * nRows + row;
 }
 
 __device__ __forceinline__ 
-double getTileAverage(int row, int col, int slice, int tileSize, int imageSize){
+double getTileAverage(int row, int col, int slice, int tileSize, int imageSize, double* image){
 	
 	int i, j;
 	double sum;
@@ -15,9 +16,9 @@ double getTileAverage(int row, int col, int slice, int tileSize, int imageSize){
 	for(i = 0; i < tileSize; i++){
 		for(j = 0; j < tileSize; j++){
 
-			tempRow = row + i;
-			tempCol = col + j;
-			tempLinearIndex = getLinearIndex(tempRow, tempCol, slice, imageSize, imageSize);
+			int tempRow = row + i;
+			int tempCol = col + j;
+			int tempLinearIndex = getLinearIndex(tempRow, tempCol, slice, imageSize, imageSize);
 
 			sum = sum + image[tempLinearIndex];
 		}
@@ -51,9 +52,9 @@ void mosaic(T* image, const T* reds, const T* greens, const T* blues, int numSam
 		return;
 	}
 
-	double avgR = getTileAverage(pixelRow, pixelCol, 0, tileSize, targetImageSize);
-	double avgG = getTileAverage(pixelRow, pixelCol, 1, tileSize, targetImageSize);
-	double avgB = getTileAverage(pixelRow, pixelCol, 2, tileSize, targetImageSize);
+	double avgR = getTileAverage(pixelRow, pixelCol, 0, tileSize, targetImageSize, image);
+	double avgG = getTileAverage(pixelRow, pixelCol, 1, tileSize, targetImageSize, image);
+	double avgB = getTileAverage(pixelRow, pixelCol, 2, tileSize, targetImageSize, image);
 
 	double minDistance = -1;	
 	int minDistanceIndex = -1;
@@ -78,7 +79,7 @@ void mosaic(T* image, const T* reds, const T* greens, const T* blues, int numSam
 }
 
 __global__
-void mosaic_cuda(double* image, const double* red, const double* green, const double* blue, int* numSamples, 
+void mosaic_cuda_double(double* image, const double* red, const double* green, const double* blue, int numSamples, 
 				 double* nearestTile, int tileSize, int numTiles, int threadsPerBlock){
 
 			mosaic(image, red, green, blue, numSamples, nearestTile, tileSize, numTiles, threadsPerBlock);
