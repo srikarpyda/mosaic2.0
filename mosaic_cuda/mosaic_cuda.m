@@ -11,18 +11,18 @@ image = imread(img);
 
 %% Initializing arrays and transferring data to GPU
 
-reds = tileValues(:,1);
-greens = tileValues(:,2);
-blues = tileValues(:,3);
+reds = cell2mat(tileValues(:,1));
+greens = cell2mat(tileValues(:,2));
+blues = cell2mat(tileValues(:,3));
 
 numTiles = (imgHeight/tileSize);
-nearestTiles = zeros(numTiles*numTiles,1);
+nearestTiles = ones(numTiles*numTiles,1);
 
-redGPU = gpuarray(reds);
-greenGPU = gpuarray(greens);
-blueGPU = gpuarray(blues);
-nearestTilesGPU = gpuarray(nearestTiles);
-imGPU = gpuarray(image);
+redGPU = gpuArray(double(reds));
+greenGPU = gpuArray(double(greens));
+blueGPU = gpuArray(double(blues));
+nearestTilesGPU = gpuArray(double(nearestTiles));
+imGPU = gpuArray(double(image));
 
 
 
@@ -33,8 +33,8 @@ j=1;
 %% GPU Function Invocation
 
     kernel = parallel.gpu.CUDAKernel(...
-        'cuda/mosaic_cuda.ptx',...
-        'cuda/mosaic_cuda.cu');
+        'mosaic_cuda.ptx',...
+        'mosaic_cuda.cu');
    
     threadsPerBlock = 16;
     numBlocks = ceil(numTiles/threadsPerBlock);
