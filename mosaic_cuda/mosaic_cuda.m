@@ -4,7 +4,7 @@ function mosaic = mosaic_cuda( img,tilePath, tileType, tileSize)
 tiles = tileMap(tilePath, tileType);
 tileValues = values(tiles);
 tileKeys = keys(tiles);
-numSamples = size(tileValues);
+numSamples = size(tileValues)
 
 image = imread(img);
 [imgHeight, imgWidth, colours] = size(image);
@@ -43,7 +43,7 @@ j=1;
     kernel.ThreadBlockSize = [threadsPerBlock, threadsPerBlock, 1];
     kernel.GridSize = [numBlocks, numBlocks];
     
-    feval(kernel, imGPU, redGPU, greenGPU, blueGPU, numSamples(1), nearestTilesGPU, tileSize, numTiles, threadsPerBlock);
+    feval(kernel, imGPU, redGPU, greenGPU, blueGPU, numSamples(2), nearestTilesGPU, tileSize, numTiles, threadsPerBlock);
 
     nearestImageIndices = gather(nearestTilesGPU)
     
