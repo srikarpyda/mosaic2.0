@@ -1,0 +1,1 @@
+mosaic_cuda('anitaresized.jpg', 'home\home3\sj166\mosaic2.0\tiles\', 'jpg', 20)

@@ -45,7 +45,7 @@ j=1;
     
     feval(kernel, imGPU, redGPU, greenGPU, blueGPU, numSamples(1), nearestTilesGPU, tileSize, numTiles, threadsPerBlock);
 
-    nearestImageIndices = gather(nearestTilesGPU);
+    nearestImageIndices = gather(nearestTilesGPU)
     
     
     
