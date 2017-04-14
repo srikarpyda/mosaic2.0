@@ -4,7 +4,6 @@ function mosaic = mosaic_cuda( img,tilePath, tileType, tileSize)
 tiles = tileMap(tilePath, tileType);
 tileValues = values(tiles);
 tileKeys = keys(tiles);
-numSamples = size(tileValues)
 
 image = imread(img);
 [imgHeight, imgWidth, colours] = size(image);
