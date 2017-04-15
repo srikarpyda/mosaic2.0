@@ -5,6 +5,8 @@ tiles = tileMap(tilePath, tileType);
 tileValues = values(tiles);
 tileKeys = keys(tiles);
 
+numSamples = size(tileValues);
+
 image = imread(img);
 [imgHeight, imgWidth, colours] = size(image);
 
@@ -24,10 +26,6 @@ nearestTilesGPU = gpuArray(double(nearestTiles));
 imGPU = gpuArray(double(image));
 
 
-
-%%tile indices
-i=1;
-j=1;
 
 %% GPU Function Invocation
 

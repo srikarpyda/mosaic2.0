@@ -50,11 +50,8 @@ void mosaic(T* image, const T* reds, const T* greens, const T* blues, int numSam
 	int targetImageSize = tileSize * numTiles;
 
 	if(pixelRow >= targetImageSize || pixelCol >= targetImageSize){
-        printf("THIS IS QUITTING %d %d %d \n", pixelRow, pixelCol, targetImageSize);
 		return;
 	}
-
-    printf("This is not quitting! \n");
 
 	double avgR = getTileAverage(pixelRow, pixelCol, 0, tileSize, targetImageSize, image);
 	double avgG = getTileAverage(pixelRow, pixelCol, 1, tileSize, targetImageSize, image);
@@ -67,7 +64,6 @@ void mosaic(T* image, const T* reds, const T* greens, const T* blues, int numSam
 	for(i = 0; i < numSamples; i = i+1){
 
 		double tempDistance = sqrt(pow(avgR-reds[i], 2) + pow(avgG-greens[i], 2) + pow(avgB-blues[i], 2));
-        printf("Temp distance is %d \n", tempDistance);
 		if(tempDistance < minDistance || minDistance == -1){
 			minDistance = tempDistance;
 			minDistanceIndex = i;
@@ -77,7 +73,7 @@ void mosaic(T* image, const T* reds, const T* greens, const T* blues, int numSam
 	//Tiles are indexed in row-major order
 	int tileLinearIndex = tileRowIdx * numTiles + tileColIdx;
 	nearestTiles[tileLinearIndex] = minDistanceIndex;
-    printf("Distance being put in the array: %d \n", minDistanceIndex);
+    printf("Distance being put in the array at location %d: %d \n", tileLinearIndex, minDistanceIndex);
 
 	return;
 
