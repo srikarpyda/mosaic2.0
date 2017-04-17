@@ -35,7 +35,7 @@ double getTileAverage(int row, int col, int slice, int tileSize, int imageSize, 
 
 template <typename T>
 __device__ __forceinline__
-void mosaic(T* image, const T* reds, const T* greens, const T* blues, int numSamples, T* nearestTiles, int tileSize, 
+void mosaic(T* image, const T* reds, const T* greens, const T* blues, int numSamples, int* nearestTiles, int tileSize, 
 			int numTiles, int threadsPerBlock){
 
 	//Calculate what tile this is
@@ -71,18 +71,19 @@ void mosaic(T* image, const T* reds, const T* greens, const T* blues, int numSam
 	}
 
 	//Tiles are indexed in row-major order
+
 	int tileLinearIndex = tileRowIdx * numTiles + tileColIdx;
 	nearestTiles[tileLinearIndex] = minDistanceIndex;
-    printf("Distance being put in the array at location %d: %d \n", tileLinearIndex, minDistanceIndex);
 
 	return;
 
 }
 
 __global__
-void mosaic_cuda_double(double* image, const double* red, const double* green, const double* blue, int numSamples, 
-				 double* nearestTile, int tileSize, int numTiles, int threadsPerBlock){
+void mosaic_cuda_double(int* nearestTile, double* image, const double* red, const double* green, const double* blue, int numSamples, 
+				int tileSize, int numTiles, int threadsPerBlock){
 
 			mosaic(image, red, green, blue, numSamples, nearestTile, tileSize, numTiles, threadsPerBlock);
+    
 			return;
 }
