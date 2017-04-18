@@ -12,18 +12,28 @@ image = imread(img);
 
 %% Initializing arrays and transferring data to GPU
 
-reds = cell2mat(tileValues(:,1));
-greens = cell2mat(tileValues(:,2));
-blues = cell2mat(tileValues(:,3));
+reds = zeros(1, numSamples(2));
+blues = zeros(1, numSamples(2));
+greens = zeros(1, numSamples(2));
+
+for i = 1: numSamples(2)
+    temp = cell2mat(tileValues(i));
+    reds(1, i) = temp(1);
+    greens(1, i) = temp(2);
+    blues(1, i) = temp(3);
+end
+
+reds(11)
+reds(1)
 
 numTiles = (imgHeight/tileSize);
 nearestTiles = ones(numTiles*numTiles,1,'int32');
 
-redGPU = gpuArray(double(reds));
-greenGPU = gpuArray(double(greens));
-blueGPU = gpuArray(double(blues));
+imGPU = gpuArray(int32(image));
+redGPU = gpuArray(int32(reds));
+greenGPU = gpuArray(int32(greens));
+blueGPU = gpuArray(int32(blues));
 nearestTilesGPU = gpuArray(nearestTiles);
-imGPU = gpuArray( double(image));
 
 
 

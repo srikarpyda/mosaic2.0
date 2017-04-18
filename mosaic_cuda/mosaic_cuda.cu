@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include <stdint.h>
 
 __device__ __forceinline__ 
 int getLinearIndex(int row, int col, int slice, int nRows, int nCols){
@@ -9,10 +10,11 @@ int getLinearIndex(int row, int col, int slice, int nRows, int nCols){
 }
 
 __device__ __forceinline__ 
-double getTileAverage(int row, int col, int slice, int tileSize, int imageSize, double* image){
+double getTileAverage(int row, int col, int slice, int tileSize, int imageSize, int* image){
 	
 	int i, j;
-	double sum;
+	double sum = 0.0;
+	double size = tileSize * tileSize;
 
 	for(i = 0; i < tileSize; i++){
 		for(j = 0; j < tileSize; j++){
@@ -22,10 +24,15 @@ double getTileAverage(int row, int col, int slice, int tileSize, int imageSize, 
 			int tempLinearIndex = getLinearIndex(tempRow, tempCol, slice, imageSize, imageSize);
 
 			sum = sum + image[tempLinearIndex];
+
+			if(slice == 0){
+				printf("IMAGE VALUE: %d ; SUM: %d\n", image[tempLinearIndex], sum);
+			}
 		}
 	}
+	printf("SUM: %d \n", sum);
 
-	return sum/(tileSize * tileSize);
+	return sum/size;
 }
 
 
@@ -57,18 +64,17 @@ void mosaic(T* image, const T* reds, const T* greens, const T* blues, int numSam
 	double avgG = getTileAverage(pixelRow, pixelCol, 1, tileSize, targetImageSize, image);
 	double avgB = getTileAverage(pixelRow, pixelCol, 2, tileSize, targetImageSize, image);
 
+	printf("Tuple of averages: %d, %d, %d \n", avgR, avgG, avgB);
+
 	double minDistance = -1;	
 	int minDistanceIndex = -1;
 
 	int i;
 	for(i = 0; i < numSamples; i = i+1){
 
-		double tempDistance = 0;
-        tempDistance=tempDistance+ fabs(pow(avgR-reds[i], 2));
-        tempDistance=tempDistance+ fabs(pow(avgG-greens[i], 2));
-        tempDistance=tempDistance + fabs(pow(avgB-blues[i], 2));
-        printf("tempDistance: %d", tempDistance);
-		if(tempDistance < minDistance || minDistance == -1){
+		double tempDistance = fabs(pow(avgR-reds[i], 2) + pow(avgB-blues[i], 2) + pow(avgG-greens[i], 2));
+
+		if(fabs(tempDistance) < minDistance || minDistance == -1){
 			minDistance = tempDistance;
 			minDistanceIndex = i;
 		}
@@ -84,7 +90,7 @@ void mosaic(T* image, const T* reds, const T* greens, const T* blues, int numSam
 }
 
 __global__
-void mosaic_cuda_double(int* nearestTile, double* image, const double* red, const double* green, const double* blue, int numSamples, 
+void mosaic_cuda_double(int* nearestTile, int* image, const int* red, const int* green, const int* blue, int numSamples, 
 				int tileSize, int numTiles, int threadsPerBlock){
 
 			mosaic(image, red, green, blue, numSamples, nearestTile, tileSize, numTiles, threadsPerBlock);
