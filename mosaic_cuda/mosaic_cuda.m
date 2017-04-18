@@ -23,7 +23,7 @@ redGPU = gpuArray(double(reds));
 greenGPU = gpuArray(double(greens));
 blueGPU = gpuArray(double(blues));
 nearestTilesGPU = gpuArray(nearestTiles);
-imGPU = gpuArray(double(image));
+imGPU = gpuArray( double(image));
 
 
 
@@ -39,7 +39,6 @@ numBlocks = ceil(numTiles/threadsPerBlock);
 %Each block has 16 x 16 threads
 kernel.ThreadBlockSize = [threadsPerBlock, threadsPerBlock, 1];
 kernel.GridSize = [numBlocks, numBlocks];
-size(nearestTilesGPU)
 nearestTilesGPU= feval(kernel, nearestTilesGPU, imGPU, redGPU, greenGPU, blueGPU, numSamples(2), tileSize, numTiles, threadsPerBlock);
 nearestImageIndices =  gather(nearestTilesGPU);
 for i=1:numTiles
@@ -48,7 +47,7 @@ for i=1:numTiles
         nearestImage = imread(tileKeys{imgIdx+1});
         nearestImage= imresize(nearestImage, [tileSize tileSize]);
 
-        mosaic{i,j}=nearestImage;
+        mosaic{i,j}=double(nearestImage);
     end
 end
 

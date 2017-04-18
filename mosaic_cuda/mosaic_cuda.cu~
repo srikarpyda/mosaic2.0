@@ -57,23 +57,20 @@ void mosaic(T* image, const T* reds, const T* greens, const T* blues, int numSam
 	double avgG = getTileAverage(pixelRow, pixelCol, 1, tileSize, targetImageSize, image);
 	double avgB = getTileAverage(pixelRow, pixelCol, 2, tileSize, targetImageSize, image);
 
-	double minDistance = -1;	
+	long minDistance = -1;	
 	int minDistanceIndex = -1;
 
 	int i;
 	for(i = 0; i < numSamples; i = i+1){
 
-		double tempDistance = 0;
-        tempDistance=tempDistance+ fabs(pow(avgR-reds[i], 2));
-        tempDistance=tempDistance+ fabs(pow(avgG-greens[i], 2));
-        tempDistance=tempDistance + fabs(pow(avgB-blues[i], 2));
-        printf("tempDistance: %d", tempDistance);
+		long tempDistance = pow(avgR-reds[i], 2) + pow(avgG-greens[i], 2) + pow(avgB-blues[i], 2);
+        printf("tempDistance: %d ", tempDistance);
 		if(tempDistance < minDistance || minDistance == -1){
 			minDistance = tempDistance;
 			minDistanceIndex = i;
 		}
 	}
-
+    int 
 	//Tiles are indexed in row-major order
 
 	int tileLinearIndex = tileRowIdx * numTiles + tileColIdx;
