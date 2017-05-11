@@ -1,5 +1,7 @@
 function mosaic = Mosaic( img,tilePath, tileType, tileSize)
 
+tic 
+
 %% construct tile map
 tiles = tileMap(tilePath, tileType);
 
@@ -49,6 +51,7 @@ for y =1:tileSize:imgHeight-tileSize+1
     j=j+1;
 end
 
+toc
 
 mosaic = uint8(cell2mat(mosaic));
 figure;
